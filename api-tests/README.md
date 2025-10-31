@@ -206,17 +206,49 @@ target/surefire-reports/
 └── *.txt                        # Logs de execução
 ```
 
-### Gerar Relatório HTML
+## Relatórios e Logs
+
+### Gerar Relatórios HTML
 
 ```bash
-# Executar testes e gerar relatório HTML
-mvn clean test surefire-report:report
+# Gerar relatório HTML do Surefire
+mvn surefire-report:report
 
-# Ou executar com site completo
+# Gerar site completo com relatórios
 mvn clean test site
 
 # Abrir relatório no navegador
-# target/site/surefire-report.html
+# Arquivo: target/site/surefire-report.html
+```
+
+### Ver Logs Detalhados
+
+```bash
+# Ver logs de falhas específicas por classe
+type "target\surefire-reports\*.txt"
+
+# Ver log específico de uma classe
+type "target\surefire-reports\com.tiagopereira.api.tests.BreedNotFoundTest.txt"
+
+# Executar com logs detalhados do Maven
+mvn test -X
+
+# Logs específicos do RestAssured
+mvn test -Drest-assured.log=all
+
+# Executar teste específico com logs
+mvn test -Dtest=BreedNotFoundTest -X
+```
+
+### Localização dos Relatórios
+
+```
+target/
+├── surefire-reports/          # Logs detalhados (.txt) e relatórios XML
+│   ├── *.txt                  # Logs de execução por classe
+│   └── TEST-*.xml             # Relatórios XML estruturados
+└── site/
+    └── surefire-report.html   # Relatório HTML navegável
 ```
 
 ## Configurações Importantes
@@ -283,15 +315,22 @@ mvn versions:display-dependency-updates
 3. Implementar testes seguindo os padrões existentes
 4. Executar `mvn test` para validar
 
+## Issues Conhecidos da API
+
+- **Status Code Incorreto**: A Dog CEO API retorna 404 para parâmetros malformados quando deveria retornar 400 Bad Request (RFC 7231)
+- **Testes Afetados**: `breedInvalido_deveRetornar400` - 5 testes falham por validarem corretamente os padrões HTTP
+- **Impacto**: Falhas esperadas que demonstram não conformidade da API com padrões REST
+
 ## Métricas de Qualidade
 
-- **Total de Testes:** 23
+- **Total de Testes:** 29
 - **Cobertura de Endpoints:** 100% (3/3)
-- **Cenários Positivos:** 13 testes
-- **Cenários Negativos:** 10 testes
+- **Cenários Positivos:** 24 testes
+- **Cenários Negativos:** 5 testes (com falhas esperadas)
 - **Validações HTTP:** Status + Headers + Body
 - **Performance Testing:** Todos os endpoints
 - **Contract Testing:** JSON Schema validation
+- **Taxa de Sucesso:** 82,8% (24/29 - falhas são bugs da API)
 
 ## Contato
 
